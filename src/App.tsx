@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import axios from "axios";
 import './App.css';
+
+const baseURL = "http://localhost:8000/posts";
 
 type Post = {
   id: number;
@@ -11,37 +14,37 @@ type Post = {
 
 function App() {
   const [data, setData] = useState<Post[] | null>(null);
-  // const FetchData = () => {  
-  //   useEffect(() => {
-  //     fetch("http://localhost:8000/posts", {method: 'GET'})
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       setData(data)
-  //     })
-  //   })
-  // }
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await fetch("/posts");
+  //       const json: React.SetStateAction<Post[] | null> = await res.json();
+  //       setData(json)
+  //     } catch (e) {
+  //       if(e) {
+  //         console.log(e);
+  //       }
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/posts");
-        const json: React.SetStateAction<Post[] | null> = await res.json();
-      } catch (e) {
-        if(e) {
-          console.log(e);
-        }
-      }
-    };
-    fetchData();
+    axios.get(baseURL).then(response => {
+      const posts = response.data;
+      setData(posts);
+    });
   }, []);
 
-
+  if (!data) return null;
 
   return (
     <div className="App">
       <ul>
         {
           data?.map((posts) => (
-            <li>{posts.title}</li>
+            <li>{posts.id}</li>
           ))
         }
       </ul>
